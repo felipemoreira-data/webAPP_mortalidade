@@ -1,0 +1,37 @@
+/* styles/custom.css */
+
+/* Fundo da aplicação */
+.stApp {
+    background-color: #f8fafd;
+}
+
+/* Customização dos KPI Cards (Azul Institucional) */
+div[data-testid="stMetric"] {
+    background-color: #ffffff;
+    padding: 22px;
+    border-radius: 12px;
+    box-shadow: 0px 4px 16px rgba(13, 71, 161, 0.05);
+    border-top: 5px solid #0d47a1;
+    transition: transform 0.2s;
+}
+
+div[data-testid="stMetric"]:hover {
+    transform: translateY(-2px);
+}
+
+/* Customização de citações e blocos de alerta (Vermelho Cirúrgico) */
+blockquote {
+    background-color: #ffffff !important;
+    border-left: 5px solid #d32f2f !important;
+    padding: 15px !important;
+    border-radius: 4px;
+    box-shadow: 0px 2px 8px rgba(0,0,0,0.02);
+}
+
+/* Títulos customizados para a Sidebar */
+.sidebar-title {
+    color: #0d47a1;
+    font-weight: 700;
+    font-size: 1.15rem;
+    margin-bottom: 15px;
+}
