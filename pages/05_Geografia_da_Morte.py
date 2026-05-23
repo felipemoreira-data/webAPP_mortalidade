@@ -6,10 +6,10 @@ from core.components import inicializar_layout_global
 
 inicializar_layout_global()
 
-# 1. Configuração Básica da Página
+
 st.set_page_config(page_title="Geografia da Mortalidade", layout="wide")
 
-# Estilização sob medida para destacar os clusters regionais
+
 st.markdown("""
     <style>
     div[data-testid="stMetric"] {
@@ -22,15 +22,15 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# 2. Resgatar e Tratar Dados da Sessão
+
 data = get_data()
 df_geo = data["geografia"].copy()
 
-# Sincronização rigorosa de tipos e limpeza de strings nulas nas UFs
+
 df_geo["ano_obito"] = df_geo["ano_obito"].astype(int)
 df_geo["uf"] = df_geo["uf"].fillna("Sem registro").replace({"": "Sem registro", "None": "Sem registro"})
 
-# Limites dinâmicos para manter os filtros globais funcionando
+
 anos_disponiveis = sorted(df_geo["ano_obito"].unique())
 ano_min, ano_max = int(anos_disponiveis[0]), int(anos_disponiveis[-1])
 
@@ -39,7 +39,7 @@ if "ciclos_vida" in data:
 else:
     sexos_disponiveis = ["Masculino", "Feminino", "Ignorado"]
 
-# 3. RECRIANDO A SIDEBAR GLOBAL PERSISTENTE
+
 st.sidebar.title("📌 Filtros Globais")
 st.sidebar.markdown("Estes filtros são compartilhados entre todas as páginas.")
 
@@ -62,7 +62,7 @@ if len(filtro_sexo) < len(sexos_disponiveis):
     st.sidebar.info("💡 *Nota: Esta base de dados específica do CID-10 é consolidada de forma geral, portanto os gráficos abaixo exibirão o total de ambos os gêneros.*")
 
 
-# 🛠️ CONTROLE INTELIGENTE DE DADOS AUSENTES
+
 st.sidebar.markdown("---")
 st.sidebar.subheader("⚙️ Qualidade dos Dados")
 remover_sem_registro = st.sidebar.checkbox(
@@ -71,14 +71,14 @@ remover_sem_registro = st.sidebar.checkbox(
     help="Ative para analisar o ranking dos estados ignorando os óbitos que não possuem a UF preenchida."
 )
 
-# 4. APLICAR FILTROS HISTÓRICOS (Sempre mantendo o total geral no dataframe base)
+
 df_filtrado = df_geo[
     (df_geo["ano_obito"] >= filtro_anos[0]) & 
     (df_geo["ano_obito"] <= filtro_anos[1])
 ].copy()
 
 
-# 5. TÍTULO E NARRATIVA DA PÁGINA
+
 st.title("🗺️ Geografia e Demografia Espacial da Mortalidade")
 st.markdown("""
     > **A Dimensão Territorial:** *Como o volume de óbitos se distribui pelas federações e quais causas (CID-10) predominam em cada região?*
@@ -88,11 +88,10 @@ st.markdown("""
 
 st.markdown("---")
 
-# 6. CÁLCULO DE MÉTRICAS REGIONAIS (KPI CARDS INTELIGENTES)
-# Os KPIs sempre calculam com base na realidade total (com ou sem registro) para manter a precisão matemática
+
 total_obitos_geo = df_filtrado["total_obitos"].sum()
 
-# Calcular a quantidade e percentual de dados faltantes de UF para transparência analítica
+
 total_sem_reg = df_filtrado[df_filtrado["uf"].str.lower() == "sem registro"]["total_obitos"].sum()
 pct_sem_reg = (total_sem_reg / total_obitos_geo * 100) if total_obitos_geo > 0 else 0
 
@@ -103,7 +102,7 @@ kpi1.caption("Volume absoluto real capturado no período.")
 kpi2.metric(label="Notificações sem UF preenchida", value=f"{total_sem_reg:,}".replace(",", "."), delta=f"{pct_sem_reg:.1f}% da base", delta_color="inverse")
 kpi2.caption("Dados sem identificação geográfica de estado.")
 
-# Descobrir o estado real líder (ignorando o sem registro para o KPI fazer sentido prático)
+
 df_validos = df_filtrado[df_filtrado["uf"].str.lower() != "sem registro"]
 if not df_validos.empty:
     top1_uf = df_validos.groupby("uf")["total_obitos"].sum().idxmax()
@@ -116,13 +115,13 @@ kpi3.caption("Unidade da Federação com maior volume válido.")
 
 st.markdown("---")
 
-# 🛠️ APLICAÇÃO DO FILTRO OPCIONAL NOS GRÁFICOS
+
 if remover_sem_registro:
     df_graficos = df_filtrado[df_filtrado["uf"].str.lower() != "sem registro"].copy()
 else:
     df_graficos = df_filtrado.copy()
 
-# 7. INTERATIVIDADE AVANÇADA COM CID-10 + UF
+
 col_filtros, col_mapa = st.columns([1, 2])
 
 with col_filtros:
@@ -158,7 +157,7 @@ with col_mapa:
 
 st.markdown("---")
 
-# 8. VISUALIZAÇÃO CRIATIVA 2: BUBBLE CHART TEMPORAL E TOP 10
+
 col_esq, col_dir = st.columns([2, 1])
 
 with col_esq:

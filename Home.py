@@ -21,7 +21,7 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# Buscar dados já convertidos para int no loader
+
 data = get_data()
 df_ciclos = data["ciclos_vida"]
 df_violencia = data["violencia"]
@@ -32,7 +32,7 @@ ano_min, ano_max = int(anos_disponiveis[0]), int(anos_disponiveis[-1])
 st.sidebar.title("📌 Filtros Globais")
 st.sidebar.markdown("Estes filtros afetam todas as páginas do painel.")
 
-# O slider armazena inteiros puramente em st.session_state
+
 filtro_anos = st.sidebar.slider(
     "Selecione o Período",
     min_value=ano_min,

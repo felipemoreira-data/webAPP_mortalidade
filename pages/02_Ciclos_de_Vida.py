@@ -25,19 +25,19 @@ st.markdown("""
 data = get_data()
 df_ciclos = data["ciclos_vida"].copy()
 
-# Garantir sincronia de tipos
+
 df_ciclos["ano_obito"] = df_ciclos["ano_obito"].astype(int)
 
-# Limites dinâmicos
+
 anos_disponiveis = sorted(df_ciclos["ano_obito"].unique())
 ano_min, ano_max = int(anos_disponiveis[0]), int(anos_disponiveis[-1])
 sexos_disponiveis = sorted(df_ciclos["sexo"].unique().tolist())
 
-# 🛠️ RECRIANDO A SIDEBAR SINCRONIZADA COM A HOME
+
 st.sidebar.title("📌 Filtros Globais")
 st.sidebar.markdown("Estes filtros são compartilhados entre todas as páginas.")
 
-# Slider conectado à chave global da Home
+
 filtro_anos = st.sidebar.slider(
     "Selecione o Período",
     min_value=ano_min,
@@ -46,7 +46,7 @@ filtro_anos = st.sidebar.slider(
     key="slider_ano_global" # A mesma chave garante que a escolha da Home apareça aqui
 )
 
-# Multiselect conectado à chave global da Home
+
 filtro_sexo = st.sidebar.multiselect(
     "Selecione o Gênero",
     options=sexos_disponiveis,
@@ -54,14 +54,14 @@ filtro_sexo = st.sidebar.multiselect(
     key="multiselect_sexo_global" # A mesma chave mantém os sexos marcados na Home
 )
 
-# Aplicar os filtros na base de dados
+
 df_filtrado = df_ciclos[
     (df_ciclos["ano_obito"] >= filtro_anos[0]) & 
     (df_ciclos["ano_obito"] <= filtro_anos[1]) &
     (df_ciclos["sexo"].isin(filtro_sexo))
 ].copy()
 
-# Mapeamento para o cálculo ponderado real
+
 mapeamento_idades = {
     "0-1": 0.5, "0 a 1 ano": 0.5, "Menor de 1 ano": 0.5,
     "1-4": 2.5, "5-14": 9.5, "15-29": 22.0, "30-59": 44.5,

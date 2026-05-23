@@ -6,10 +6,10 @@ from core.components import inicializar_layout_global
 
 inicializar_layout_global()
 
-# 1. Configuração Básica da Página
+
 st.set_page_config(page_title="Transição Epidemiológica", layout="wide")
 
-# Estilização personalizada para dar um tom analítico elegante
+
 st.markdown("""
     <style>
     div[data-testid="stMetric"] {
@@ -29,18 +29,18 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# 2. Resgatar Dados da Sessão
+
 data = get_data()
 df_transicao = data["transicao"].copy()
 
-# Sincronização de tipos
+
 df_transicao["ano_obito"] = df_transicao["ano_obito"].astype(int)
 
-# 3. RECUPERAR OS VALORES E RECRIAR A SIDEBAR COMPLETA
+
 anos_disponiveis = sorted(df_transicao["ano_obito"].unique())
 ano_min, ano_max = int(anos_disponiveis[0]), int(anos_disponiveis[-1])
 
-# Pegamos a lista global de sexos das outras abas para alimentar o filtro visual aqui
+
 if "ciclos_vida" in data:
     sexos_disponiveis = sorted(data["ciclos_vida"]["sexo"].unique().tolist())
 else:
@@ -49,7 +49,7 @@ else:
 st.sidebar.title("📌 Filtros Globais")
 st.sidebar.markdown("Estes filtros são compartilhados entre todas as páginas.")
 
-# Slider de Ano
+
 filtro_anos = st.sidebar.slider(
     "Selecione o Período",
     min_value=ano_min,
@@ -58,7 +58,7 @@ filtro_anos = st.sidebar.slider(
     key="slider_ano_global"
 )
 
-# 🛠️ RECUPERANDO O FILTRO DE GÊNERO NA SIDEBAR (EVITA QUE ELE SUMA DA INTERFACE)
+
 filtro_sexo = st.sidebar.multiselect(
     "Selecione o Gênero",
     options=sexos_disponiveis,
@@ -66,17 +66,17 @@ filtro_sexo = st.sidebar.multiselect(
     key="multiselect_sexo_global"
 )
 
-# 4. APLICAR FILTRO TEMPORAL
+
 df_filtrado = df_transicao[
     (df_transicao["ano_obito"] >= filtro_anos[0]) & 
     (df_transicao["ano_obito"] <= filtro_anos[1])
 ].copy()
 
-# Aviso sutil e elegante se o usuário filtrar gênero nesta aba
+
 if len(filtro_sexo) < len(sexos_disponiveis):
     st.sidebar.info("💡 *Nota: Esta base de dados específica do CID-10 é consolidada de forma geral, portanto os gráficos abaixo exibirão o total de ambos os gêneros.*")
 
-# 5. INTRODUÇÃO CRIATIVA
+
 st.title("🦠 A Transição Epidemiológica no Brasil")
 st.markdown("""
     > **A Grande Transformação:** Ao longo das últimas décadas, o perfil de mortalidade do Brasil mudou drasticamente. 
@@ -85,7 +85,7 @@ st.markdown("""
 """)
 st.markdown("---")
 
-# 6. CÁLCULO DE RANKINGS E METRICAS (KPI CARDS INTELIGENTES)
+
 total_obitos_periodo = df_filtrado["total_obitos"].sum()
 
 df_ranking_geral = df_filtrado.groupby("capitulo_cid")["total_obitos"].sum().reset_index()
@@ -110,7 +110,7 @@ kpi3.metric(label=f"🥈 2ª Maior Causa: {causa_top2[:30]}...", value=f"{pct_to
 
 st.markdown("---")
 
-# 7. VISUALIZAÇÃO CRIATIVA 1: O GRÁFICO DE BUMP (Evolução das Posições no Ranking)
+
 st.markdown("### 🏃‍♂️ A Corrida das Causas de Morte (Evolução do Top 5)")
 st.markdown("Veja como os capítulos do CID-10 subiram ou desceram no ranking de letalidade ano a ano.")
 
@@ -131,7 +131,7 @@ st.plotly_chart(fig_bump, use_container_width=True)
 
 st.markdown("---")
 
-# 8. SEÇÃO DE EXPLORAÇÃO PROFUNDA (Interatividade Avançada)
+
 col_ctrl, col_graph = st.columns([1, 2])
 
 with col_ctrl:
@@ -163,7 +163,7 @@ with col_graph:
     fig_isolado.update_traces(line_color="#ef553b", fillcolor="rgba(239, 85, 59, 0.2)")
     st.plotly_chart(fig_isolado, use_container_width=True)
 
-# 9. LINHA DO TEMPO COMPLEMENTAR DE FATOS HISTÓRICOS
+
 with st.expander("⏳ Linha do Tempo: Grandes Marcos da Saúde Pública no Período"):
     st.markdown("""
     <div class="fato-historico">
