@@ -4,7 +4,6 @@ __pycache__/
 *.pyd
 .pytest_cache/
 
-
 venv/
 .venv/
 env/
@@ -12,7 +11,6 @@ env/
 bin/
 lib/
 include/
-
 
 .streamlit/runtime/
 .streamlit/secret.toml
